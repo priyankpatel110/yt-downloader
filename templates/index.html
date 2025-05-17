@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Downloader</title>
+    <style>
+        body {
+            background-color: #181818;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            margin: 0;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            border: none;
+            border-radius: 5px;
+            background-color: #303030;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        button:hover {
+            background-color: #e60000;
+        }
+
+        #spinner {
+            display: none;
+            border: 5px dotted #ff0000;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        li {
+            background-color: #202020;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        a {
+            color: #1e90ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #ff0000;
+        }
+
+        .flash-success {
+            color: #4caf50;
+            margin-top: 20px;
+        }
+
+        .flash-error {
+            color: #ff5722;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 22px;
+            }
+
+            button {
+                font-size: 14px;
+                max-width: 100%;
+            }
+
+            input[type="text"] {
+                font-size: 14px;
+            }
+
+            li {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+    <script>
+        function showProcessingMessage() {
+            document.getElementById('spinner').style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <h2>YouTube Video Downloader</h2>
+    <form action="/download_video" method="post" onsubmit="showProcessingMessage()">
+        <input type="text" name="link" placeholder="Enter YouTube Link" required>
+        <button type="submit">Download</button>
+    </form>
+
+    <div id="spinner"></div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <p class="flash-{{ category }}">{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if videos %}
+        <ul>
+            {% for video in videos %}
+                <li>
+                    <a href="{{ url_for('download_file', filename=video.filename) }}">{{ video.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
